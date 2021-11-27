@@ -3,11 +3,18 @@ package com.example.mall_study.mbg.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 这个自动生成的类对应这mapper.xml里的条件列表
+ * 主要对字段查询进行操作
+ * 比如一张表有id, name, first_letter, sort, factory_status, show_status, product_count, product_comment_count, 等属性
+ * 我要查name = xxx and sort=xxx and show_status = xxx时，就可以使用这个作为条件语句
+ */
 public class PmsBrandExample {
+    //聚合字段
     protected String orderByClause;
-
+    //当有重复数据出现时，是否显示
     protected boolean distinct;
-
+    //如果是多条件查询，会在mapper.xml文件中遍历条件语句再进行插入到sql语句中查询
     protected List<Criteria> oredCriteria;
 
     public PmsBrandExample() {
@@ -63,6 +70,7 @@ public class PmsBrandExample {
         distinct = false;
     }
 
+    //存在多个Criterion条件的组合以及规范插入的值
     protected abstract static class GeneratedCriteria {
         protected List<Criterion> criteria;
 
@@ -83,6 +91,10 @@ public class PmsBrandExample {
             return criteria;
         }
 
+        /**
+         * 插入完整sql条件
+         * @param condition 例：name = "xxx" and age = xx or sex = "xx"
+         */
         protected void addCriterion(String condition) {
             if (condition == null) {
                 throw new RuntimeException("Value for condition cannot be null");
@@ -90,6 +102,12 @@ public class PmsBrandExample {
             criteria.add(new Criterion(condition));
         }
 
+        /**
+         * 匿名插入单个条件或条件组
+         * @param condition condition 例：name = "xxx" and age = xx or sex = "xx"
+         * @param value value 单条件值或List<?>条件组
+         * @param property
+         */
         protected void addCriterion(String condition, Object value, String property) {
             if (value == null) {
                 throw new RuntimeException("Value for " + property + " cannot be null");
@@ -97,6 +115,13 @@ public class PmsBrandExample {
             criteria.add(new Criterion(condition, value));
         }
 
+        /**
+         * 匿名插入范围条件
+         * @param condition 例between
+         * @param value1 between后第一个值
+         * @param value2 between xxx and ???中的???值
+         * @param property
+         */
         protected void addCriterion(String condition, Object value1, Object value2, String property) {
             if (value1 == null || value2 == null) {
                 throw new RuntimeException("Between values for " + property + " cannot be null");
@@ -752,19 +777,25 @@ public class PmsBrandExample {
         }
     }
 
+    //where后的条件组装
     public static class Criterion {
+        //条件：用于where后的sql字符串，比如and、or、in等或者完整sql条件语句
         private String condition;
-
+        //条件值
         private Object value;
-
+        //条件组最后的值，比如between xxx and ???中的???
         private Object secondValue;
-
+        //条件类型：当value没有值时，noValue = true
+        //并且condition为sql条件或者name = xxx and age = xx or sex = xx完整sql语句
         private boolean noValue;
-
+        //条件类型：当value只有一个值时，singleValue = true
+        //并且conditionW为sql条件，value即是值
         private boolean singleValue;
-
+        //条件类型：当使用between xxx and xxx时，betweenValue = true
+        //并且condition值为between，value值为between后第一个值，secondValue为between xxx and xxx中and后的值
         private boolean betweenValue;
-
+        //条件类型：(xxx,xxx,xxx,xxx)，当传入的value是括号中的值集合时，listValue = true
+        //并且condition值为in、and、or等条件
         private boolean listValue;
 
         private String typeHandler;
@@ -801,6 +832,10 @@ public class PmsBrandExample {
             return typeHandler;
         }
 
+        /**
+         * 插入完整sql条件
+         * @param condition 例：name = "xxx" and age = xx or sex = "xx"
+         */
         protected Criterion(String condition) {
             super();
             this.condition = condition;
@@ -808,6 +843,12 @@ public class PmsBrandExample {
             this.noValue = true;
         }
 
+        /**
+         * 插入单个条件或条件组
+         * @param condition 条件例：and、or、in等
+         * @param value 单条件值或List<?>条件组
+         * @param typeHandler 操作人
+         */
         protected Criterion(String condition, Object value, String typeHandler) {
             super();
             this.condition = condition;
@@ -820,10 +861,22 @@ public class PmsBrandExample {
             }
         }
 
+        /**
+         * 匿名插入单个条件或条件组
+         * @param condition 条件例：and、or、in等
+         * @param value value 单条件值或List<?>条件组
+         */
         protected Criterion(String condition, Object value) {
             this(condition, value, null);
         }
 
+        /**
+         * 插入范围条件
+         * @param condition 例between
+         * @param value between后第一个值值
+         * @param secondValue between xxx and ???中的？？？值
+         * @param typeHandler 操作人
+         */
         protected Criterion(String condition, Object value, Object secondValue, String typeHandler) {
             super();
             this.condition = condition;
@@ -833,6 +886,12 @@ public class PmsBrandExample {
             this.betweenValue = true;
         }
 
+        /**
+         * 匿名插入范围条件
+         * @param condition 例between
+         * @param value between后第一个值
+         * @param secondValue between xxx and ???中的???值
+         */
         protected Criterion(String condition, Object value, Object secondValue) {
             this(condition, value, secondValue, null);
         }

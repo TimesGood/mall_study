@@ -80,12 +80,18 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     public String login(String username, String password) {
         String token = null;
         try {
+            //根据用户名获取用户
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            //输入的密码与用户的密码比对
             if (!passwordEncoder.matches(password, userDetails.getPassword())) {
                 throw new BadCredentialsException("密码不正确");
             }
+            //验证成功把用户的信息最重要的就是权限，userDetails.getAuthorities()把用户所持权限拿出交由AuthenticationManager进行管理
+            //之后再controller通过注解@PreAuthorize("hasAuthority('pms:brand:read')")，单引号就是需要的权限，访问该接口时会将此注解中字符串
+            //与被管理的用户的权限列表比对，有就可以继续访问，没有则抛AccessDeniedException异常
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            //制作token
             token = jwtTokenUtil.generateToken(userDetails);
         } catch (AuthenticationException e) {
             LOGGER.warn("登录异常:{}", e.getMessage());

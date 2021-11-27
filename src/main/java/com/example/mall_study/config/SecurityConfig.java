@@ -18,6 +18,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -57,14 +58,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js",
                         "/swagger-resources/**",
-                        "/v2/api-docs/**"
+                        "/swagger-ui.html",
+                        "/swagger**",
+                        "/v2/api-docs/**",
+                        "/webjars/**"
                 )
                 .permitAll()
                 .antMatchers("/admin/login", "/admin/register")// 对登录注册要允许匿名访问
                 .permitAll()
                 .antMatchers(HttpMethod.OPTIONS)//跨域请求会先进行一次options请求
-//                .permitAll()
-//                .antMatchers("/**")//测试时全部允许访问
+                .permitAll()
+                .antMatchers("/**")//测试时全部允许访问
                 .permitAll()
                 .anyRequest()//除上面外的所有请求全部需要鉴权认证
                 .authenticated();
@@ -72,7 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.headers().cacheControl();
         // 添加JWT filter
         httpSecurity.addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-        //添加自定义未授权和未登录结果返回
+        //异常处理，添加自定义未授权和未登录结果返回异常
         httpSecurity.exceptionHandling()
                 .accessDeniedHandler(restfulAccessDeniedHandler)//没有权限时返回信息
                 .authenticationEntryPoint(restAuthenticationEntryPoint);//没有登录或者Token已经过期返回信息
@@ -91,21 +95,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new JwtAuthenticationTokenFilter();
     }
 
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
     //注入获取用户信息的操作
     @Bean
     public UserDetailsService userDetailsService() {
         //获取登录用户信息，储存当前用户的权限等等信息
-        return username -> {
-            //获取用户信息
-            UmsAdmin admin = adminService.getAdminByUsername(username);
-            if (admin != null) {
-                //根据用户Id获取该用户所拥有的权限
-                List<UmsPermission> permissionList = adminService.getPermissionList(admin.getId());
-                //返回用户的信息及其权限列表
-                return new AdminUserDetails(admin,permissionList);
+        return new UserDetailsService() {
+            @Override
+            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+                //根据用户名获取用户
+                UmsAdmin admin = adminService.getAdminByUsername(username);
+                if (admin != null) {
+                    //根据用户Id获取该用户所拥有的权限
+                    List<UmsPermission> permissionList = adminService.getPermissionList(admin.getId());
+                    //返回用户的信息及其该用户的权限列表
+                    return new AdminUserDetails(admin,permissionList);
+                }
+                //message消息
+                throw new UsernameNotFoundException("用户名或密码错误");
             }
-            //message消息
-            throw new UsernameNotFoundException("用户名或密码错误");
         };
     }
     //注入PasswordEncoder加密

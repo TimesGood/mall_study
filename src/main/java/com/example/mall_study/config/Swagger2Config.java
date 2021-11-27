@@ -21,9 +21,14 @@ import java.util.List;
 @Configuration
 @EnableSwagger2
 public class Swagger2Config {
+    /**
+     * 生成Api文档界面的配置
+     * @return
+     */
     @Bean
     public Docket createRestApi(){
-        return new Docket(DocumentationType.SWAGGER_2)
+        return new Docket(DocumentationType.OAS_30)
+                //页面详细
                 .apiInfo(apiInfo())
                 .tags(new Tag("UmsAdminController","后台用户管理"),getTags())
                 .select()
@@ -53,6 +58,10 @@ public class Swagger2Config {
         };
     }
 
+    /**
+     * 写入Api的一些信息
+     * @return
+     */
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("商城物品管理")
@@ -62,16 +71,26 @@ public class Swagger2Config {
                 .version("1.0")
                 .build();
     }
-    private List<ApiKey> securitySchemes() {
+
+    /**
+     * 设置请求头，当一个请求发出时，需要在请求头写携带Authorization这个来确认可以访问
+     * @return
+     */
+    private List<SecurityScheme> securitySchemes() {
         //设置请求头信息
-        List<ApiKey> result = new ArrayList<>();
-        ApiKey apiKey = new ApiKey("Authorization", "Authorization", "header");
-        result.add(apiKey);
-        return result;
+        List<SecurityScheme> schemeList = new ArrayList<>();
+        //name：jwt参数名，也是储存token的key，keyname:与name保持一致，passAs存放位置
+        SecurityScheme schemes = new ApiKey("Authorization", "Authorization", "header");
+        schemeList.add(schemes);
+        return schemeList;
     }
 
+    /**
+     * 设置需要登录验证Authorization的接口路径
+     * @return
+     */
     private List<SecurityContext> securityContexts() {
-        //设置需要登录认证的路径
+        //设置需要登录认证的接口路径
         List<SecurityContext> result = new ArrayList<>();
         result.add(getContextByPath("/brand/.*"));
         return result;
