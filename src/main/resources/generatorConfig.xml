@@ -20,9 +20,11 @@
         <!--*********************************生成注释*************************************-->
         <!--可以自定义生成model的代码注释-->
         <commentGenerator type="com.example.mall_study.mbg.CommentGenerator">
-            <!-- 是否去除自动生成的注释 true：是 ： false:否 -->
+            <!-- 去除自动生成的注释 -->
             <property name="suppressAllComments" value="true"/>
+            <!--去除生成日期-->
             <property name="suppressDate" value="true"/>
+            <!--是否把表中的备注添加到注释中-->
             <property name="addRemarkComments" value="true"/>
         </commentGenerator>
         <!--*********************************数据库配置*************************************-->

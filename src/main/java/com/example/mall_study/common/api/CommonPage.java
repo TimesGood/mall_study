@@ -1,6 +1,7 @@
 package com.example.mall_study.common.api;
 
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -9,10 +10,15 @@ import java.util.List;
  * 分页数据封装类
  */
 public class CommonPage<T> {
+    @ApiModelProperty("当前页")
     private Integer pageNum;
+    @ApiModelProperty("每页的数量")
     private Integer pageSize;
+    @ApiModelProperty("总页数")
     private Integer totalPage;
+    @ApiModelProperty("总数")
     private Long total;
+    @ApiModelProperty("请求结果")
     private List<T> list;
 
     /**

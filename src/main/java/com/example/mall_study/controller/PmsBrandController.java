@@ -4,8 +4,7 @@ import com.example.mall_study.common.api.CommonPage;
 import com.example.mall_study.common.api.CommonResult;
 import com.example.mall_study.mbg.model.PmsBrand;
 import com.example.mall_study.service.PmsBrandService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +39,7 @@ public class PmsBrandController {
 
     @PreAuthorize("hasAuthority('pms:brand:create')")
     @ApiOperation("添加品牌")
+
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
     public CommonResult<PmsBrand> createBrand(@RequestBody PmsBrand pmsBrand) {
@@ -58,9 +58,12 @@ public class PmsBrandController {
 
     @PreAuthorize("hasAuthority('pms:brand:update')")
     @ApiOperation("更新指定id品牌信息")
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name="id",value = "品牌id")
+    })
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResult<PmsBrand> updateBrand(@PathVariable("id") Long id, @RequestBody PmsBrand pmsBrandDto, BindingResult result) {
+    public CommonResult<PmsBrand> updateBrand(@RequestParam("id") Long id, @RequestBody PmsBrand pmsBrandDto, BindingResult result) {
         LOGGER.debug("更新指定id品牌信息");
         CommonResult<PmsBrand> commonResult;
         int count = demoService.updateBrand(id, pmsBrandDto);
@@ -76,9 +79,12 @@ public class PmsBrandController {
 
     @PreAuthorize("hasAuthority('pms:brand:delete')")
     @ApiOperation("删除指定id的品牌")
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name="id",value = "品牌id")
+    })
+    @RequestMapping(value = "/delete", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResult<String> deleteBrand(@PathVariable("id") Long id) {
+    public CommonResult<String> deleteBrand(@RequestParam(value="id") Long id) {
         LOGGER.debug("删除指定id的品牌");
         int count = demoService.deleteBrand(id);
         if (count == 1) {
@@ -92,10 +98,14 @@ public class PmsBrandController {
 
     @PreAuthorize("hasAuthority('pms:brand:read')")
     @ApiOperation("分页查询品牌列表")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name="pageNum",value = "页"),
+            @ApiImplicitParam(name="pageSize",value = "一页显示数量")
+    })
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResult<CommonPage<PmsBrand>> listBrand(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
-                                                        @RequestParam(value = "pageSize", defaultValue = "3") Integer pageSize) {
+    public CommonResult<CommonPage<PmsBrand>> listBrand(@RequestParam(value = "pageNum",defaultValue = "0") Integer pageNum,
+                                                        @RequestParam(value = "pageSize",defaultValue = "5") Integer pageSize) {
         LOGGER.debug("分页查询品牌列表");
         List<PmsBrand> brandList = demoService.listBrand(pageNum, pageSize);
         return CommonResult.success(CommonPage.restPage(brandList));
@@ -103,9 +113,12 @@ public class PmsBrandController {
 
     @PreAuthorize("hasAuthority('pms:brand:read')")
     @ApiOperation("获取指定id的品牌详情")
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "id",value = "品牌id")
+    })
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResult<PmsBrand> brand(@PathVariable("id") Long id) {
+    public CommonResult<PmsBrand> brand(@RequestParam(value="id") Long id) {
         LOGGER.debug("获取指定id的品牌详情");
         return CommonResult.success(demoService.getBrand(id));
     }

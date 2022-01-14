@@ -6,6 +6,8 @@ import com.example.mall_study.mbg.model.UmsAdmin;
 import com.example.mall_study.mbg.model.UmsPermission;
 import com.example.mall_study.service.UmsAdminService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +21,6 @@ import java.util.Map;
 
 /**
  * 后台用户管理
- * Created by macro on 2018/4/26.
  */
 @Controller
 @Api(tags = {"UmsAdminController"})
@@ -44,7 +45,7 @@ public class UmsAdminController {
     }
 
     @ApiOperation(value = "登录以后返回token")
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @RequestMapping(value = "/login", method = RequestMethod.POST/*,headers = "content-type=multipart/form-data"*/)
     @ResponseBody
     public CommonResult<Map<String,String>> login(@RequestBody UmsAdminLoginParam umsAdminLoginParam, BindingResult result) {
         String token = adminService.login(umsAdminLoginParam.getUsername(), umsAdminLoginParam.getPassword());
@@ -56,11 +57,21 @@ public class UmsAdminController {
         tokenMap.put("tokenHead", tokenHead);
         return CommonResult.success(tokenMap);
     }
+    @ApiOperation(value = "账号登出")
+    @RequestMapping(value = "/logout",method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult logout(){
+        adminService.logout();
+        return CommonResult.success("登出成功");
+    }
 
     @ApiOperation("获取用户所有权限（包括+-权限）")
-    @RequestMapping(value = "/permission/{adminId}", method = RequestMethod.GET)
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "adminId",value = "用户id" )
+    })
+    @RequestMapping(value = "/permission", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResult<List<UmsPermission>> getPermissionList(@PathVariable Long adminId) {
+    public CommonResult<List<UmsPermission>> getPermissionList(@RequestParam(value = "adminId") Long adminId) {
         List<UmsPermission> permissionList = adminService.getPermissionList(adminId);
         return CommonResult.success(permissionList);
     }

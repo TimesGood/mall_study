@@ -39,21 +39,23 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                                     FilterChain chain) throws ServletException, IOException {
         //拿到Authorization头的值
         String authHeader = request.getHeader(this.tokenHeader);
+        //当存在token时，并且token前缀与自己设置的前缀相同时（前缀自己在application.yml中自定义jwt属性设置）
         if (authHeader != null && authHeader.startsWith(this.tokenHead)) {
-            //拿到token
-            String authToken = authHeader.substring(this.tokenHead.length());// The part after "Bearer "
-            //从token中获取登录用户信息
+            //截取前缀拿到真正的token
+            String authToken = authHeader.substring(this.tokenHead.length());
+            //解析token，从token中获取登录用户信息
             String username = jwtTokenUtil.getUserNameFromToken(authToken);
-            LOGGER.info("checking username:{}", username);
-            //如果存在该用户，进行身份验证
+            LOGGER.info("解析token用户:{}", username);
+            //如果token解析的用户存在，并且之前并没有进行登录操作
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 //根据用户名获取该用户信息
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-                //如果该用户与token验证通过
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                //验证该token与数据库中用户信息比对
                 if (jwtTokenUtil.validateToken(authToken, userDetails)) {
+                    //比对通过，进行登录操作
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    LOGGER.info("authenticated user:{}", username);
+                    LOGGER.info("认证通过用户:{}", username);
                     //证明通行
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }

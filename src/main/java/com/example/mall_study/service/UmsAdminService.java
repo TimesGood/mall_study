@@ -7,7 +7,6 @@ import java.util.List;
 
 /**
  * 后台管理员Service
- * Created by macro on 2018/4/26.
  */
 public interface UmsAdminService {
     /**
@@ -29,7 +28,15 @@ public interface UmsAdminService {
     String login(String username, String password);
 
     /**
+     * 账号登出
+     * @return
+     */
+    String logout();
+
+    /**
      * 获取用户所有权限（包括角色权限和+-权限）
      */
     List<UmsPermission> getPermissionList(Long adminId);
+
+    List<UmsPermission> getPermissionListByUri(String uri);
 }

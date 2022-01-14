@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,7 +28,6 @@ import java.util.List;
 
 /**
  * UmsAdminService实现类
- * Created by macro on 2018/4/26.
  */
 @Service
 public class UmsAdminServiceImpl implements UmsAdminService {
@@ -99,9 +99,19 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         return token;
     }
 
+    @Override
+    public String logout() {
+
+        return null;
+    }
 
     @Override
     public List<UmsPermission> getPermissionList(Long adminId) {
         return adminRoleRelationDao.getPermissionList(adminId);
+    }
+
+    @Override
+    public List<UmsPermission> getPermissionListByUri(String uri) {
+        return adminRoleRelationDao.getPermissionListByUri(uri);
     }
 }

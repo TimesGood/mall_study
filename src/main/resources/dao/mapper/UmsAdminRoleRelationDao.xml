@@ -30,4 +30,7 @@
             pr.type = 1
             and pr.admin_id = #{adminId}
     </select>
+    <select id="getPermissionListByUri" resultMap="com.example.mall_study.mbg.mapper.UmsPermissionMapper.BaseResultMap">
+        select * from ums_permission where uri = #{uri}
+    </select>
 </mapper>

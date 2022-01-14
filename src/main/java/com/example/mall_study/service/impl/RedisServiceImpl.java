@@ -3,6 +3,7 @@ package com.example.mall_study.service.impl;
 import com.example.mall_study.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.repository.cdi.RedisKeyValueTemplateBean;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;

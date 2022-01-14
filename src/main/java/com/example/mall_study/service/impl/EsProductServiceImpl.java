@@ -5,16 +5,7 @@ import com.example.mall_study.nosql.elasticsearch.document.EsProduct;
 
 import com.example.mall_study.nosql.elasticsearch.repository.EsProductRepository;
 import com.example.mall_study.service.EsProductService;
-import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.index.query.MatchAllQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +15,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 
 /**
  * 商品搜索管理Service实现类
  */
+
 @Service
 public class EsProductServiceImpl implements EsProductService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EsProductServiceImpl.class);
@@ -47,8 +37,11 @@ public class EsProductServiceImpl implements EsProductService {
     private RestHighLevelClient restHighLevelClient;
     @Override
     public int importAll() {
+        //拿出在数据库中的数据集
         List<EsProduct> esProductList = productDao.getAllEsProductList(null);
+        //把数据库数据保存到es
         Iterable<EsProduct> esProductIterable = productRepository.saveAll(esProductList);
+
         Iterator<EsProduct> iterator = esProductIterable.iterator();
         int result = 0;
         while (iterator.hasNext()) {

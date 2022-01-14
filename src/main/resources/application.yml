@@ -2,10 +2,17 @@ server:
   port: 8080
 
 spring:
+  application:
+    name: mall_study
+  #数据源
   datasource:
-    url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    #serverTimezone=GMT%2B8时区，GMT%2B8北京东八区，也可以设置Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
     username: root
     password: root
+
+
   #配置redis缓存
   redis:
     host: localhost # Redis服务器地址
@@ -19,16 +26,10 @@ spring:
         max-idle: 8 # 连接池中的最大空闲连接
         min-idle: 0 # 连接池中的最小空闲连接
     timeout: 3000ms # 连接超时时间（毫秒）
-  data:
-    #配置elasticsearch
-    elasticsearch:
-      repositories:
-        enabled: true
-#  elasticsearch:
-#    rest:
-#      uris: http://localhost:9300
-
-
+  #配置es搜索引擎
+  elasticsearch:
+    rest:
+      uris: http://localhost:9200
 
 #指定mybatis的mapper扫描路径
 mybatis:
@@ -56,4 +57,10 @@ jwt:
 #自定义elasticsearch属性
 elasticsearch:
   node_name: 127.0.0.1:9200
-
+#自定义swagger配置属性
+swagger:
+  enable: true
+  application-name: ${spring.application.name}
+  application-version: 1.0
+  application-description: 商城管理Api
+  try-host:http://localhos: ${server.port}

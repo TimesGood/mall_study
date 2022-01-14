@@ -4,7 +4,6 @@ import com.example.mall_study.mbg.mapper.PmsBrandMapper;
 import com.example.mall_study.mbg.model.PmsBrand;
 import com.example.mall_study.mbg.model.PmsBrandExample;
 import com.example.mall_study.service.PmsBrandService;
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
 import org.springframework.beans.factory.annotation.Autowired;

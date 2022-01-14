@@ -1,11 +1,16 @@
 package com.example.mall_study.common.api;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * 通用返回对象
  */
 public class CommonResult<T> {
+    @ApiModelProperty("状态码")
     private long code;
+    @ApiModelProperty("消息")
     private String message;
+    @ApiModelProperty("数据结果集")
     private T data;
 
     protected CommonResult() {

@@ -1,4 +1,5 @@
 package com.example.mall_study.nosql.elasticsearch.document;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -17,30 +18,46 @@ import java.util.List;
 public class EsProduct implements Serializable {
     private static final long serialVersionUID = -1L;
     @Id
+    @ApiModelProperty("商品Id")
     private Long id;
     @Field(type = FieldType.Keyword)
+    @ApiModelProperty("商品条码")
     private String productSn;
+    @ApiModelProperty("品牌Id")
     private Long brandId;
     @Field(type = FieldType.Keyword)
+    @ApiModelProperty("品牌名称")
     private String brandName;
+    @ApiModelProperty("商品分类Id")
     private Long productCategoryId;
     @Field(type = FieldType.Keyword)
+    @ApiModelProperty("商品分类名")
     private String productCategoryName;
+    @ApiModelProperty("商品img地址")
     private String pic;
     @Field(analyzer = "ik_max_word",type = FieldType.Text)
+    @ApiModelProperty("商品名")
     private String name;
     @Field(analyzer = "ik_max_word",type = FieldType.Text)
+    @ApiModelProperty("商品标题")
     private String subTitle;
     @Field(analyzer = "ik_max_word",type = FieldType.Text)
+    @ApiModelProperty("商品Id")
     private String keywords;
+    @ApiModelProperty("定价")
     private BigDecimal price;
+    @ApiModelProperty("销售数")
     private Integer sale;
+    @ApiModelProperty("商品状态")
     private Integer newStatus;
     private Integer recommandStatus;
+    @ApiModelProperty("库存")
     private Integer stock;
     private Integer promotionType;
+    @ApiModelProperty("排序")
     private Integer sort;
     @Field(type =FieldType.Nested)
+    @ApiModelProperty("商品其他特征")
     private List<EsProductAttributeValue> attrValueList;
 
     public static long getSerialVersionUID() {

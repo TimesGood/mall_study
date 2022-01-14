@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,11 +24,19 @@ public class AdminUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        //返回当前用户的权限
-        return permissionList.stream()
+//        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+//        permissionList.forEach(permission -> {
+//            GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(permission.getValue());
+//            grantedAuthorities.add(grantedAuthority);
+//        });
+//        return grantedAuthorities;
+//        //返回当前用户的权限
+        return permissionList.stream()//将集合转为流
+                //过滤空元素
                 .filter(permission -> permission.getValue()!=null)
-                .map(permission ->new SimpleGrantedAuthority(permission.getValue()))
-                .collect(Collectors.toList());
+                //用于映射每个元素到对应的结果,就是把List<UmsPermission>替换为List<GrantedAuthority>
+                .map(permission -> new SimpleGrantedAuthority(permission.getValue()))
+                .collect(Collectors.toList());//将流转为集合
     }
 
     @Override
