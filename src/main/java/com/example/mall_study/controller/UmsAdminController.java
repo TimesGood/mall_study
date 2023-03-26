@@ -1,9 +1,11 @@
 package com.example.mall_study.controller;
 
 import com.example.mall_study.common.api.CommonResult;
+import com.example.mall_study.config.JwtProperties;
 import com.example.mall_study.dto.UmsAdminLoginParam;
 import com.example.mall_study.mbg.model.UmsAdmin;
 import com.example.mall_study.mbg.model.UmsPermission;
+import com.example.mall_study.mbg.model.UmsRole;
 import com.example.mall_study.service.UmsAdminService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -28,10 +30,8 @@ import java.util.Map;
 public class UmsAdminController {
     @Autowired
     private UmsAdminService adminService;
-    @Value("${jwt.tokenHeader}")
-    private String tokenHeader;
-    @Value("${jwt.tokenHead}")
-    private String tokenHead;
+    @Autowired
+    private JwtProperties jwtProperties;
 
     @ApiOperation(value = "用户注册")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -54,7 +54,7 @@ public class UmsAdminController {
         }
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("token", token);
-        tokenMap.put("tokenHead", tokenHead);
+        tokenMap.put("tokenHead", jwtProperties.getTokenHead());
         return CommonResult.success(tokenMap);
     }
     @ApiOperation(value = "账号登出")
@@ -74,5 +74,16 @@ public class UmsAdminController {
     public CommonResult<List<UmsPermission>> getPermissionList(@RequestParam(value = "adminId") Long adminId) {
         List<UmsPermission> permissionList = adminService.getPermissionList(adminId);
         return CommonResult.success(permissionList);
+    }
+
+    @ApiOperation("获取用户角色")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "adminId",value = "用户id" )
+    })
+    @RequestMapping(value = "/role", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<List<UmsRole>> getRoleList(@RequestParam(value = "adminId") Long adminId) {
+        List<UmsRole> umsRoleList = adminService.getRoleList(adminId);
+        return CommonResult.success(umsRoleList);
     }
 }

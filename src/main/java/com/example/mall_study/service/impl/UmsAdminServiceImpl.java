@@ -7,6 +7,7 @@ import com.example.mall_study.mbg.mapper.UmsAdminMapper;
 import com.example.mall_study.mbg.model.UmsAdmin;
 import com.example.mall_study.mbg.model.UmsAdminExample;
 import com.example.mall_study.mbg.model.UmsPermission;
+import com.example.mall_study.mbg.model.UmsRole;
 import com.example.mall_study.service.UmsAdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +39,6 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Value("${jwt.tokenHead}")
-    private String tokenHead;
     @Autowired
     private UmsAdminMapper adminMapper;
     @Autowired
@@ -113,5 +112,10 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     @Override
     public List<UmsPermission> getPermissionListByUri(String uri) {
         return adminRoleRelationDao.getPermissionListByUri(uri);
+    }
+
+    @Override
+    public List<UmsRole> getRoleList(Long adminId) {
+        return adminRoleRelationDao.getRoleList(adminId);
     }
 }

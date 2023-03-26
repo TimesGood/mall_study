@@ -1,6 +1,7 @@
 package com.example.mall_study.service.impl;
 
 import com.example.mall_study.common.api.CommonResult;
+import com.example.mall_study.common.util.RedisUtil;
 import com.example.mall_study.service.RedisService;
 import com.example.mall_study.service.UmsMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,19 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         redisService.expire(REDIS_KEY_PREFIX_AUTH_CODE + telephone, AUTH_CODE_EXPIRE_SECONDS);
         return CommonResult.success(sb.toString(), "获取验证码成功");
     }
+    @Override
+    public CommonResult<String> generateAuthCodeBack(String telephone) {
+        StringBuilder sb = new StringBuilder();
+        //获取随机数
+        Random random = new Random();
+        for (int i = 0; i < 6; i++) {
+            sb.append(random.nextInt(10));
+        }
+        //验证码绑定手机号并存储到redis
+        RedisUtil.set(REDIS_KEY_PREFIX_AUTH_CODE + telephone,sb.toString());
+        RedisUtil.expire(REDIS_KEY_PREFIX_AUTH_CODE + telephone,AUTH_CODE_EXPIRE_SECONDS);
+        return CommonResult.success(sb.toString(), "获取验证码成功");
+    }
 
 
     //对输入的验证码进行校验
@@ -52,4 +66,17 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         }
     }
 
+    @Override
+    public CommonResult<String> verifyAuthCodeBack(String telephone, String authCode) {
+        if (StringUtils.isEmpty(authCode)) {
+            return CommonResult.failed("请输入验证码");
+        }
+        String realAuthCode = RedisUtil.get(REDIS_KEY_PREFIX_AUTH_CODE + telephone);
+        boolean result = authCode.equals(realAuthCode);
+        if (result) {
+            return CommonResult.success(null, "验证码校验成功");
+        } else {
+            return CommonResult.failed("验证码不正确");
+        }
+    }
 }

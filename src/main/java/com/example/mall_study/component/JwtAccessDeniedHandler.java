@@ -15,14 +15,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * 当访问接口没有权限时，自定义处理逻辑
+ * 拒绝访问，权限不足处理逻辑
  */
 @Component
-public class CustomizeAccessDeniedHandler implements AccessDeniedHandler{
-    private static final Logger LOGGER = LoggerFactory.getLogger(CustomizeAccessDeniedHandler.class);
+public class JwtAccessDeniedHandler implements AccessDeniedHandler{
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtAccessDeniedHandler.class);
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException, ServletException {
-        LOGGER.info("无权限处理");
+        LOGGER.info("用户没有权限");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=utf-8");
         response.getWriter().println(JSONUtil.parse(CommonResult.forbidden(e.getMessage())));

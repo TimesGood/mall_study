@@ -52,7 +52,7 @@ redis:
 jwt:
   tokenHeader: Authorization #JWT存储的请求头
   secret: mySecret #JWT加解密使用的密钥
-  expiration: 604800 #JWT的超期限时间(60*60*24)
+  expiration: 180 #JWT的超期限时间(单位秒)
   tokenHead: Bearer  #JWT负载中拿到开头
 #自定义elasticsearch属性
 elasticsearch:

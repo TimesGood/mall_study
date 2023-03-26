@@ -1,9 +1,6 @@
 package com.example.mall_study.component;
 
-import cn.hutool.json.JSON;
 import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -28,8 +25,8 @@ import java.nio.charset.StandardCharsets;
  * 提交，如果是json提交我们在这里就可以取得json数据中的用户信息
  * 解析给认证者拿去认证
  */
-public class CustomizeUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CustomizeUsernamePasswordAuthenticationFilter.class);
+public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtUsernamePasswordAuthenticationFilter.class);
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         LOGGER.info("登录拦截，如果是json提交的数据，解析json给认证者");
@@ -58,11 +55,16 @@ public class CustomizeUsernamePasswordAuthenticationFilter extends UsernamePassw
                 if(username == null) username = "";
                 if(password == null) password = "";
                 username = username.trim();
+                //将账号密码组成Authentication
                 authenticationToken = new UsernamePasswordAuthenticationToken(username,password);
             }
             this.setDetails(request,authenticationToken);
+            //把Authentication交给AuthenticationManager进行认证
+            //AuthenticationManager被ProviderManager实现，ProviderManager又把Authentication
+            //交给AuthenticationProvider，AuthenticationProvider被DaoAuthenticationProvider实现
+            //DaoAuthenticationProvider调用UserDetailsService的loadUserByUsername方法
+            //而这个UserDetailsService就是我们要实现的类
             return this.getAuthenticationManager().authenticate(authenticationToken);
-
         } else {
             return super.attemptAuthentication(request, response);
         }

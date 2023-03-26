@@ -17,8 +17,8 @@ import java.io.IOException;
  * 登出成功时的自定义处理逻辑
  */
 @Component
-public class CustomizeLogoutSuccessHandler implements LogoutSuccessHandler {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CustomizeLogoutSuccessHandler.class);
+public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtLogoutSuccessHandler.class);
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         LOGGER.info("登出成功处理");

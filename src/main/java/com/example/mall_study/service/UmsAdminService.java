@@ -2,6 +2,7 @@ package com.example.mall_study.service;
 
 import com.example.mall_study.mbg.model.UmsAdmin;
 import com.example.mall_study.mbg.model.UmsPermission;
+import com.example.mall_study.mbg.model.UmsRole;
 
 import java.util.List;
 
@@ -39,4 +40,6 @@ public interface UmsAdminService {
     List<UmsPermission> getPermissionList(Long adminId);
 
     List<UmsPermission> getPermissionListByUri(String uri);
+
+    List<UmsRole> getRoleList(Long id);
 }

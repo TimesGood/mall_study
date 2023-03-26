@@ -33,4 +33,13 @@
     <select id="getPermissionListByUri" resultMap="com.example.mall_study.mbg.mapper.UmsPermissionMapper.BaseResultMap">
         select * from ums_permission where uri = #{uri}
     </select>
+    <select id="getRoleList" resultMap="com.example.mall_study.mbg.mapper.UmsRoleMapper.BaseResultMap">
+        select
+            r.*
+        from ums_admin_role_relation ar
+                 inner join ums_role r ON ar.role_id = r.id
+        where
+            ar.admin_id = #{adminId}
+    </select>
+
 </mapper>

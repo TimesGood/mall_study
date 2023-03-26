@@ -1,15 +1,19 @@
 package com.example.mall_study.component;
 
 import com.example.mall_study.common.util.JwtTokenUtil;
+import com.example.mall_study.config.JwtProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -17,32 +21,37 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * JWT登录授权过滤器
- * 在每次进行请求时携带token进行一次免密登录的操作
+ * 在每次进行请求时如果携带token则进行一次免密登录的操作
  */
-public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
+public class JwtAuthenticationTokenFilter extends BasicAuthenticationFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationTokenFilter.class);
     @Autowired
     private UserDetailsService userDetailsService;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
-    @Value("${jwt.tokenHeader}")
-    private String tokenHeader;
-    @Value("${jwt.tokenHead}")
-    private String tokenHead;
+    @Autowired
+    private JwtProperties jwtProperties;
+
+    public JwtAuthenticationTokenFilter(AuthenticationManager authenticationManager) {
+        super(authenticationManager);
+    }
+
     /**在用户名和密码校验前添加的过滤器，如果有jwt的token，会自行根据token信息进行登录。**/
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
         //拿到Authorization头的值
-        String authHeader = request.getHeader(this.tokenHeader);
+        String authHeader = request.getHeader(jwtProperties.getTokenHeader());
+        String uri = request.getRequestURI();
         //当存在token时，并且token前缀与自己设置的前缀相同时（前缀自己在application.yml中自定义jwt属性设置）
-        if (authHeader != null && authHeader.startsWith(this.tokenHead)) {
+        if (authHeader != null && authHeader.startsWith(jwtProperties.getTokenHead())) {
             //截取前缀拿到真正的token
-            String authToken = authHeader.substring(this.tokenHead.length());
+            String authToken = authHeader.substring(jwtProperties.getTokenHead().length());
             //解析token，从token中获取登录用户信息
             String username = jwtTokenUtil.getUserNameFromToken(authToken);
             LOGGER.info("解析token用户:{}", username);
@@ -60,6 +69,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
+        }else{
+            LOGGER.info("首次登录 jwt为空");
         }
         chain.doFilter(request, response);
     }

@@ -16,8 +16,8 @@ import java.io.IOException;
  * 会话失效(账号被挤下线)处理逻辑
  */
 @Component
-public class CustomizeSessionInformationExpiredStrategy implements SessionInformationExpiredStrategy {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CustomizeSessionInformationExpiredStrategy.class);
+public class JwtSessionInformationExpiredStrategy implements SessionInformationExpiredStrategy {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtSessionInformationExpiredStrategy.class);
     @Override
     public void onExpiredSessionDetected(SessionInformationExpiredEvent event) throws IOException, ServletException {
         LOGGER.info("会话失效处理");

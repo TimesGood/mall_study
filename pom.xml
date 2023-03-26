@@ -96,6 +96,13 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
+        <!--Jedis-->
+<!--        <dependency>-->
+<!--            <groupId>redis.clients</groupId>-->
+<!--            <artifactId>jedis</artifactId>-->
+<!--            <version>3.1.0</version>-->
+<!--        </dependency>-->
+
         <!--SpringSecurity依赖配置-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -107,7 +114,7 @@
             <artifactId>hutool-all</artifactId>
             <version>4.5.7</version>
         </dependency>
-        <!--JWT(Json Web Token)登录支持-->
+        <!--JWT(Json Web Token)登录认证支持-->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
@@ -123,6 +130,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
         </dependency>
+        <!--配置注释处理器（只是配置文件与实体类映射提示用的，打包时排除即可）-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
 
     </dependencies>
 
@@ -137,6 +150,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
 
     <build>
         <plugins>
@@ -156,6 +170,13 @@
                 <version>2.3.7.RELEASE</version>
                 <configuration>
                     <mainClass>com.example.mall_study.MallStudyApplication</mainClass>
+                    <!--打包排除项-->
+                    <excludes>
+                        <exclude>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-configuration-processor</artifactId>
+                        </exclude>
+                    </excludes>
                 </configuration>
                 <executions>
                     <execution>

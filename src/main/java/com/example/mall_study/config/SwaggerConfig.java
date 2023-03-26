@@ -2,6 +2,7 @@ package com.example.mall_study.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.*;
@@ -23,9 +24,12 @@ public class SwaggerConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(SwaggerConfig.class);
     //application.yml定义属性的映射类
     private final SwaggerProperties swaggerProperties;
+    @Autowired
+    private JwtProperties jwtProperties;
     public SwaggerConfig(SwaggerProperties swaggerProperties) {
         this.swaggerProperties = swaggerProperties;
     }
+
 
     /**
      * 生成Api文档界面的配置
@@ -94,7 +98,7 @@ public class SwaggerConfig {
      */
     private List<SecurityScheme> securitySchemes() {
         //name：jwt参数名，也是储存token的key，keyname:与name保持一致，passAs存放位置
-        ApiKey apiKey = new ApiKey("Authorization", "Authorization", "header");
+        ApiKey apiKey = new ApiKey(jwtProperties.getTokenHeader(), jwtProperties.getTokenHeader(), "header");
         return Collections.singletonList(apiKey);
     }
 
