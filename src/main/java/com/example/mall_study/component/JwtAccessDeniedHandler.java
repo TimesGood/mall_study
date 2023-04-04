@@ -22,7 +22,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler{
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAccessDeniedHandler.class);
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException, ServletException {
-        LOGGER.info("用户没有权限");
+        LOGGER.info("用户没有权限处理");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=utf-8");
         response.getWriter().println(JSONUtil.parse(CommonResult.forbidden(e.getMessage())));

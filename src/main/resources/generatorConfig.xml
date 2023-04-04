@@ -7,20 +7,25 @@
     <!--引入配置文件-->
     <properties resource="generator.properties"/>
     <context id="MySqlContext" targetRuntime="MyBatis3" defaultModelType="flat">
+        <!--生成的Java文件的编码-->
         <property name="beginningDelimiter" value="`"/>
         <property name="endingDelimiter" value="`"/>
         <property name="javaFileEncoding" value="UTF-8"/>
+        <!--格式化Java代码-->
+        <property name="javaFormatter" value="org.mybatis.generator.api.dom.DefaultJavaFormatter"/>
+        <!--格式化Xml代码-->
+        <property name="xmlFormatter" value="org.mybatis.generator.api.dom.DefaultXmlFormatter"/>
         <!--*********************************插件*************************************-->
-        <!-- 为模型生成序列化方法-->
+        <!--生成的实体类自动实现Serializable序列化-->
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
-        <!-- 为生成的Java模型创建一个toString方法 -->
+        <!--为生成的实体类创建一个toString方法-->
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
-        <!--生成mapper.xml时覆盖原文件-->
-        <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin" />
+        <!--生成mapper.xml时覆盖原文件（原来是会直接追加到原文件中的-->
+        <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
         <!--*********************************生成注释*************************************-->
         <!--可以自定义生成model的代码注释-->
         <commentGenerator type="com.example.mall_study.mbg.CommentGenerator">
-            <!-- 去除自动生成的注释 -->
+            <!--去除自动生成的注释 -->
             <property name="suppressAllComments" value="true"/>
             <!--去除生成日期-->
             <property name="suppressDate" value="true"/>

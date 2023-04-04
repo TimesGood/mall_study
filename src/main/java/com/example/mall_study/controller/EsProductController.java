@@ -17,7 +17,7 @@ import java.util.List;
  * 搜索商品管理Controller
  */
 @Controller
-@Api(tags = {"EsProductController"})
+@Api(tags = {"搜索商品管理"})
 @RequestMapping("/esProduct")
 public class EsProductController {
     @Autowired
@@ -35,7 +35,7 @@ public class EsProductController {
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "id",value = "商品id")
     })
-    @RequestMapping(value = "/delete", method = RequestMethod.GET)
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ResponseBody
     public CommonResult<Object> delete(@RequestParam("id") Long id) {
         esProductService.delete(id);
@@ -96,5 +96,4 @@ public class EsProductController {
         Page<EsProduct> esProducts = esProductService.noteSearch(name, pageNum, pageSize);
         return CommonResult.success(CommonPage.restPage(esProducts));
     }
-
 }

@@ -1,9 +1,11 @@
 package com.example.mall_study.mbg.model;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
 
+@ApiModel("权限")
 public class UmsPermission implements Serializable {
     private Long id;
 

@@ -12,7 +12,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +24,7 @@ import java.util.Map;
  * 后台用户管理
  */
 @Controller
-@Api(tags = {"UmsAdminController"})
+@Api(tags = {"后台用户管理"})
 @RequestMapping("/admin")
 public class UmsAdminController {
     @Autowired
@@ -44,8 +43,15 @@ public class UmsAdminController {
         return CommonResult.success(umsAdmin);
     }
 
+    /**
+     * 当在SecurityConfig中配置了登录地址时，如果配置的地址与这里一致时，这里可以不用写了
+     * 因为校验登录的逻辑已经被AuthenticationManager管理
+     * @param umsAdminLoginParam
+     * @param result
+     * @return
+     */
     @ApiOperation(value = "登录以后返回token")
-    @RequestMapping(value = "/login", method = RequestMethod.POST/*,headers = "content-type=multipart/form-data"*/)
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
     public CommonResult<Map<String,String>> login(@RequestBody UmsAdminLoginParam umsAdminLoginParam, BindingResult result) {
         String token = adminService.login(umsAdminLoginParam.getUsername(), umsAdminLoginParam.getPassword());
@@ -54,7 +60,7 @@ public class UmsAdminController {
         }
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("token", token);
-        tokenMap.put("tokenHead", jwtProperties.getTokenHead());
+        tokenMap.put("tokenPrefix", jwtProperties.getTokenPrefix());
         return CommonResult.success(tokenMap);
     }
     @ApiOperation(value = "账号登出")

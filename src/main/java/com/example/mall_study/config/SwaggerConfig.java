@@ -1,16 +1,23 @@
 package com.example.mall_study.config;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.bind.annotation.RequestMethod;
 import springfox.documentation.builders.*;
 import springfox.documentation.oas.annotations.EnableOpenApi;
+import springfox.documentation.schema.ScalarType;
 import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.OperationContext;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.*;
 
@@ -20,6 +27,7 @@ import java.util.*;
  */
 @Configuration
 @EnableOpenApi
+//@EnableSwagger2
 public class SwaggerConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(SwaggerConfig.class);
     //application.yml定义属性的映射类
@@ -39,43 +47,41 @@ public class SwaggerConfig {
     public Docket createRestApi(){
         LOGGER.info("接口地址：{}","http://localhost:8080/swagger-ui/index.html");
         return new Docket(DocumentationType.OAS_30).pathMapping("/")//pathMapping接口前缀
+                .groupName("webApi")
+                //是否开启swagger
                 .enable(swaggerProperties.getEnable())
                 //页面详细
                 .apiInfo(apiInfo())
                 //接口调试地址
                 .host(swaggerProperties.getTryHost())
-                //为每组Api添加描述
-                .tags(new Tag("UmsAdminController","后台用户管理"),getTags())
                 //选择哪些接口作为doc发布
                 .select()
-                //为当前包下controller生成API文档
-                .apis(RequestHandlerSelectors.basePackage("com.example.mall_study.controller"))
+                //为指定包下controller生成API文档
+//                .apis(RequestHandlerSelectors.basePackage("com.example.mall_study.controller"))
                 //为有@Api注解的Controller生成API文档
 //                .apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
                 //为有@ApiOperation注解的方法生成API文档
-//                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
                 //扫描路径，对所有目录扫描
                 .paths(PathSelectors.any())
                 .build()
                 //支持的通讯协议
-                .protocols(newHashSet("https", "http"))
+                .protocols(new LinkedHashSet<>(Arrays.asList("https","http")))
                 //授权信息设置，必要的header token等认证信息
                 .securitySchemes(securitySchemes())
-                //授权信息全局应用
+                //授权信息应用的接口路径
                 .securityContexts(securityContexts());
     }
 
+
     /**
-     * 设置每组Api的描述信息
-     * 直接在控制层注解@Api(tags = {"name"})即可
-     * @return 标题组
+     * 通用响应信息
+     * @return
      */
-    private Tag[] getTags() {
-        return new Tag[]{
-                new Tag("UmsMemberController", "会员登录注册管理"),
-                new Tag("PmsBrandController", "商品品牌管理"),
-                new Tag("EsProductController","搜索商品管理")
-        };
+    private List<Response> getGlobalResponseMessage(){
+        List<Response> responses = new ArrayList<>();
+        responses.add(new ResponseBuilder().code("404").description("找不到资源").build());
+        return responses;
     }
 
     /**
@@ -85,8 +91,8 @@ public class SwaggerConfig {
         return new ApiInfoBuilder()
                 .title(swaggerProperties.getApplicationName())
                 .description(swaggerProperties.getApplicationDescription())
-                .termsOfServiceUrl("对外地址：xxx")
-                .contact(new Contact("张文科",null,"2907520924@qq.com"))
+                .termsOfServiceUrl("服务条款：xxx")
+                .contact(new Contact("张文科","https://github.com/TimesGood/mall_study","2907520924@qq.com"))
                 .version(swaggerProperties.getApplicationVersion())
                 .build();
     }
@@ -119,10 +125,11 @@ public class SwaggerConfig {
 
     private List<SecurityReference> defaultAuth() {
         List<SecurityReference> result = new ArrayList<>();
-        AuthorizationScope[] authorizationScopes = new AuthorizationScope[]{
-                new AuthorizationScope("global", "accessEverything")
-        };
-        result.add(new SecurityReference("Authorization", authorizationScopes));
+        SecurityReference.SecurityReferenceBuilder builder = new SecurityReference.SecurityReferenceBuilder();
+        builder.reference(jwtProperties.getTokenHeader())
+                .scopes(new AuthorizationScope[]{new AuthorizationScope("global", "accessEverything")});
+
+        result.add(builder.build());
         return result;
     }
     @SafeVarargs

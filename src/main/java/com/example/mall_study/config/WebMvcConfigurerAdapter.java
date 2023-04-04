@@ -1,31 +1,16 @@
 package com.example.mall_study.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.util.FieldUtils;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.lang.reflect.Field;
-import java.util.List;
+import org.springframework.web.servlet.config.annotation.*;
 
 
+/**
+ */
 @Configuration
 public class WebMvcConfigurerAdapter implements WebMvcConfigurer {
-
     /**
-     * 配置静态资源访问路径
+     * 拦截器配置
      */
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        //addResourceHandler对外暴露的路径
-        //addResourceLocations服务器内部的资源路径
-        registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources");
-//        registry.addResourceHandler("webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars");
-    }
-
 //    @Override
 //    public void addInterceptors(InterceptorRegistry registry) {
 //        try {
@@ -43,5 +28,26 @@ public class WebMvcConfigurerAdapter implements WebMvcConfigurer {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
+//    }
+
+
+    /**
+     * 视图跳转
+     */
+//    @Override
+//    public void addViewControllers(ViewControllerRegistry registry) {
+//        registry.addViewController("/toLogin").setViewName("index.html");
+//    }
+
+    /**
+     * 静态资源处理
+     */
+//    @Override
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        //addResourceHandler对外暴露的路径
+        //addResourceLocations服务器内部的资源路径
+//        registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources");
+//        registry.addResourceHandler("webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars");
+//        registry.addResourceHandler("/**").addResourceLocations("classpath:/META-INF/resources/view");
 //    }
 }

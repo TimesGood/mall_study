@@ -40,9 +40,21 @@ public class JwtTokenUtil {
      */
     private String generateToken(Map<String, Object> claims) {
         return Jwts.builder()
+                .setClaims(claims)//自定义参数
+                .setIssuedAt(new Date(System.currentTimeMillis()))//签发时间
+                .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getExpiration() * 60 * 1000))//过期时间
+                .signWith(SignatureAlgorithm.HS512, jwtProperties.getSecret())//
+                .compact();
+    }
+    /**
+     * 根据负责生成JWT的token
+     */
+    private String generateToken(Map<String, Object> claims,String secret) {
+        return Jwts.builder()
                 .setClaims(claims)
-                .setExpiration(generateExpirationDate())//过期时间
-                .signWith(SignatureAlgorithm.HS512, jwtProperties.getSecret())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getExpiration() * 60 * 1000))
+                .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
     }
 
@@ -60,13 +72,6 @@ public class JwtTokenUtil {
             LOGGER.info("JWT格式验证失败:{}",token);
         }
         return claims;
-    }
-
-    /**
-     * 生成token的过期时间
-     */
-    private Date generateExpirationDate() {
-        return new Date(System.currentTimeMillis() + jwtProperties.getExpiration() * 1000);
     }
 
     /**

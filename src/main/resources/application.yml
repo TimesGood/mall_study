@@ -30,6 +30,7 @@ spring:
   elasticsearch:
     rest:
       uris: http://localhost:9200
+  security:
 
 #指定mybatis的mapper扫描路径
 mybatis:
@@ -51,9 +52,9 @@ redis:
 # 自定义jwt属性
 jwt:
   tokenHeader: Authorization #JWT存储的请求头
+  tokenPrefix: Bearer  #JWT负载前缀
   secret: mySecret #JWT加解密使用的密钥
-  expiration: 180 #JWT的超期限时间(单位秒)
-  tokenHead: Bearer  #JWT负载中拿到开头
+  expiration: 5 #JWT的超期限时间(单位分)
 #自定义elasticsearch属性
 elasticsearch:
   node_name: 127.0.0.1:9200
@@ -62,5 +63,20 @@ swagger:
   enable: true
   application-name: ${spring.application.name}
   application-version: 1.0
-  application-description: 商城管理Api
-  try-host:http://localhos: ${server.port}
+  application-description: 前后端分离项目
+  try-host: "http://localhos:${server.port}"
+secure:
+  ignored:
+    urls:
+      - /swagger**/**
+      - /**/v2/api-docs
+      - /**/v3/api-docs
+      - /**/*.js
+      - /**/*.css
+      - /**/*.png
+      - /**/*.ico
+      - /webjars/*
+      - /index.html"
+      - /esProduct/**"
+      - /sso/*"
+      - /toLogin"

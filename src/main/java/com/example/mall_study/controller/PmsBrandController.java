@@ -20,8 +20,8 @@ import java.util.List;
  * 品牌管理Controller
  */
 @Controller
-@Api(tags = {"PmsBrandController"})
-@RequestMapping("/brand")//http://localhost:8080/brand
+@Api(tags = {"商品品牌管理"})
+@RequestMapping("/brand")
 public class PmsBrandController {
     @Autowired
     private PmsBrandService demoService;

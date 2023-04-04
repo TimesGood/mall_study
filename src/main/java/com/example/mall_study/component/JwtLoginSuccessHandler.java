@@ -3,6 +3,7 @@ package com.example.mall_study.component;
 import cn.hutool.json.JSONUtil;
 import com.example.mall_study.common.api.CommonResult;
 import com.example.mall_study.common.util.JwtTokenUtil;
+import com.example.mall_study.common.util.RedisUtil;
 import com.example.mall_study.config.JwtProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,7 @@ public class JwtLoginSuccessHandler implements AuthenticationSuccessHandler {
         String token = jwtTokenUtil.generateToken(userDetails);
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("token", token);
-        tokenMap.put("tokenHead", jwtProperties.getTokenHead());
+        tokenMap.put("tokenPrefix", jwtProperties.getTokenPrefix());
         //此处还可以进行一些处理，比如登录成功之后可能需要返回给前台当前用户有哪些菜单权限，
         //进而前台动态的控制菜单的显示等，具体根据自己的业务需求进行扩展
         //处理编码方式，防止中文乱码的情况

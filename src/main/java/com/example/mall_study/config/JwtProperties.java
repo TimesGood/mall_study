@@ -7,10 +7,9 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("jwt")
 public class JwtProperties {
     private String tokenHeader;
-    private String tokenHead;
-
-    private Long expiration;
+    private String tokenPrefix;
     private String secret;
+    private Long expiration;
 
     public String getTokenHeader() {
         return tokenHeader;
@@ -20,12 +19,20 @@ public class JwtProperties {
         this.tokenHeader = tokenHeader;
     }
 
-    public String getTokenHead() {
-        return tokenHead;
+    public String getTokenPrefix() {
+        return tokenPrefix;
     }
 
-    public void setTokenHead(String tokenHead) {
-        this.tokenHead = tokenHead;
+    public void setTokenPrefix(String tokenPrefix) {
+        this.tokenPrefix = tokenPrefix;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 
     public Long getExpiration() {
@@ -36,11 +43,4 @@ public class JwtProperties {
         this.expiration = expiration;
     }
 
-    public String getSecret() {
-        return secret;
-    }
-
-    public void setSecret(String secret) {
-        this.secret = secret;
-    }
 }

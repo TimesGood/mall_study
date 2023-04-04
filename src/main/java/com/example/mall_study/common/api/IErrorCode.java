@@ -1,5 +1,6 @@
 package com.example.mall_study.common.api;
 
+
 /**
  * 封装API的错误码
  */

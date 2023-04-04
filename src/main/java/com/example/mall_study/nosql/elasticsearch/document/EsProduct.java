@@ -1,4 +1,5 @@
 package com.example.mall_study.nosql.elasticsearch.document;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -14,6 +15,7 @@ import java.util.List;
  * 不需要中文分词的字段设置成@Field(type = FieldType.Keyword)类型，
  * 需要中文分词的设置成@Field(analyzer = "ik_max_word",type = FieldType.Text)类型。
  */
+@ApiModel("商品")
 @Document(indexName = "pms",shards = 1,replicas = 0)
 public class EsProduct implements Serializable {
     private static final long serialVersionUID = -1L;
