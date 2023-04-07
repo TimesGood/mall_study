@@ -1,4 +1,4 @@
-package com.example.mall_study.component;
+package com.example.mall_study.component.filter;
 
 import cn.hutool.json.JSONObject;
 import org.slf4j.Logger;

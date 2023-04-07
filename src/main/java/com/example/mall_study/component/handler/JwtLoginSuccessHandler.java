@@ -1,9 +1,8 @@
-package com.example.mall_study.component;
+package com.example.mall_study.component.handler;
 
 import cn.hutool.json.JSONUtil;
 import com.example.mall_study.common.api.CommonResult;
 import com.example.mall_study.common.util.JwtTokenUtil;
-import com.example.mall_study.common.util.RedisUtil;
 import com.example.mall_study.config.JwtProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

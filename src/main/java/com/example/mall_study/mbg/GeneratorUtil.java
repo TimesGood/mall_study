@@ -1,7 +1,5 @@
 package com.example.mall_study.mbg;
 
-import com.example.mall_study.component.JwtAuthenticationEntryPoint;
-import io.micrometer.core.instrument.util.StringUtils;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.Configuration;
 import org.mybatis.generator.config.xml.ConfigurationParser;

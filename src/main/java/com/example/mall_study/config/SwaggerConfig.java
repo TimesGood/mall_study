@@ -1,5 +1,6 @@
 package com.example.mall_study.config;
 
+import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ import java.util.*;
  */
 @Configuration
 @EnableOpenApi
+@EnableKnife4j
 //@EnableSwagger2
 public class SwaggerConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(SwaggerConfig.class);

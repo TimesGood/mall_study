@@ -50,20 +50,7 @@
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.example.mall_study.mbg.mapper"
                              targetProject="src\main\java"/>
         <!--*********************************指定要生成的表*************************************-->
-        <!--后台用户权限表-->
-<!--        <table tableName="ums_permission">-->
-<!--            <generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
-<!--        </table>-->
-<!--        <table tableName="pms_brand">-->
-<!--            <generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
-<!--        </table>-->
-<!--        <table tableName="ums_admin">-->
-<!--            <generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
-<!--        </table>-->
-<!--        <table tableName="ums_permission">-->
-<!--            <generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
-<!--        </table>-->
-        <table tableName="ums_role">
+        <table tableName="ums_resource">
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
 

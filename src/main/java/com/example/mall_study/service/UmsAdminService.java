@@ -2,7 +2,9 @@ package com.example.mall_study.service;
 
 import com.example.mall_study.mbg.model.UmsAdmin;
 import com.example.mall_study.mbg.model.UmsPermission;
+import com.example.mall_study.mbg.model.UmsResource;
 import com.example.mall_study.mbg.model.UmsRole;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
@@ -42,4 +44,8 @@ public interface UmsAdminService {
     List<UmsPermission> getPermissionListByUri(String uri);
 
     List<UmsRole> getRoleList(Long id);
+
+    List<UmsResource> getResourceList(Long adminId);
+
+    UserDetails loadUserByUsername(String username);
 }

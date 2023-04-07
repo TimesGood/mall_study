@@ -1,8 +1,6 @@
-package com.example.mall_study.component;
+package com.example.mall_study.component.filter;
 
-import com.alibaba.druid.util.StringUtils;
 import com.example.mall_study.common.util.JwtTokenUtil;
-import com.example.mall_study.common.util.RedisUtil;
 import com.example.mall_study.config.JwtProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

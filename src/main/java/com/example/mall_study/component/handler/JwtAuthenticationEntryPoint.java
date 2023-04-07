@@ -1,4 +1,4 @@
-package com.example.mall_study.component;
+package com.example.mall_study.component.handler;
 
 import cn.hutool.json.JSONUtil;
 import com.example.mall_study.common.api.CommonResult;

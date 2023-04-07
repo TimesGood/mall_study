@@ -2,6 +2,7 @@ package com.example.mall_study.dto;
 
 import com.example.mall_study.mbg.model.UmsAdmin;
 import com.example.mall_study.mbg.model.UmsPermission;
+import com.example.mall_study.mbg.model.UmsResource;
 import com.example.mall_study.mbg.model.UmsRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,12 +21,13 @@ public class AdminUserDetails implements UserDetails {
     private UmsAdmin umsAdmin;
     private List<UmsPermission> permissionList;
     private List<UmsRole> roleList;
+    private List<UmsResource> resourceList;
 
-//    private List<Role>
-    public AdminUserDetails(UmsAdmin umsAdmin, List<UmsRole> roleList,List<UmsPermission> permissionList) {
+    public AdminUserDetails(UmsAdmin umsAdmin, List<UmsRole> roleList,List<UmsPermission> permissionList,List<UmsResource> resourceList) {
         this.umsAdmin = umsAdmin;
         this.roleList = roleList;
         this.permissionList = permissionList;
+        this.resourceList = resourceList;
     }
 
     /**
@@ -33,27 +35,31 @@ public class AdminUserDetails implements UserDetails {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-//        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-//        permissionList.forEach(permission -> {
-//            GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(permission.getValue());
-//            grantedAuthorities.add(grantedAuthority);
-//        });
-//        return grantedAuthorities;
-//        //返回当前用户的权限
-        List<SimpleGrantedAuthority> permissions = permissionList.stream()//将集合转为流
-                //过滤空元素
-                .filter(permission -> permission.getValue() != null)
-                //用于映射每个元素到对应的结果,就是把List<UmsPermission>替换为List<GrantedAuthority>
-                .map(permission -> new SimpleGrantedAuthority(permission.getValue()))
-                .collect(Collectors.toList());//将流转为集合
-        List<SimpleGrantedAuthority> roles = roleList.stream()
-                .filter(role -> role.getName() != null)
-                .map(role -> new SimpleGrantedAuthority(ROLE_PREFIX+role.getName()))
+        return resourceList.stream()
+                .map(role ->new SimpleGrantedAuthority(role.getId()+":"+role.getName()))
                 .collect(Collectors.toList());
-        List<SimpleGrantedAuthority> collect = new ArrayList<>();
-        collect.addAll(permissions);
-        collect.addAll(roles);
-        return collect;
+        //权限
+//        List<SimpleGrantedAuthority> permissions = permissionList.stream()//将集合转为流
+//                //过滤空元素
+//                .filter(permission -> permission.getValue() != null)
+//                //用于映射每个元素到对应的结果,就是把List<UmsPermission>替换为List<GrantedAuthority>
+//                .map(permission -> new SimpleGrantedAuthority(permission.getValue()))
+//                .collect(Collectors.toList());//将流转为集合
+//        //角色
+//        List<SimpleGrantedAuthority> roles = roleList.stream()
+//                .filter(role -> role.getName() != null)
+//                .map(role -> new SimpleGrantedAuthority(ROLE_PREFIX+role.getName()))
+//                .collect(Collectors.toList());
+//        //资源
+//        List<SimpleGrantedAuthority> resource = resourceList.stream()
+//                .filter(res -> res.getName() != null)
+//                .map(res -> new SimpleGrantedAuthority(res.getId()+":"+res.getName()))
+//                .collect(Collectors.toList());
+//        List<SimpleGrantedAuthority> collect = new ArrayList<>();
+//        collect.addAll(permissions);
+//        collect.addAll(roles);
+//        collect.addAll(resource);
+//        return collect;
     }
 
 

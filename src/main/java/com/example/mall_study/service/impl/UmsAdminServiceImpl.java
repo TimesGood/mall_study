@@ -3,11 +3,9 @@ package com.example.mall_study.service.impl;
 
 import com.example.mall_study.common.util.JwtTokenUtil;
 import com.example.mall_study.dao.UmsAdminRoleRelationDao;
+import com.example.mall_study.dto.AdminUserDetails;
 import com.example.mall_study.mbg.mapper.UmsAdminMapper;
-import com.example.mall_study.mbg.model.UmsAdmin;
-import com.example.mall_study.mbg.model.UmsAdminExample;
-import com.example.mall_study.mbg.model.UmsPermission;
-import com.example.mall_study.mbg.model.UmsRole;
+import com.example.mall_study.mbg.model.*;
 import com.example.mall_study.service.UmsAdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +19,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,8 +32,6 @@ import java.util.List;
 @Service
 public class UmsAdminServiceImpl implements UmsAdminService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UmsAdminServiceImpl.class);
-    @Autowired
-    private UserDetailsService userDetailsService;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
@@ -80,7 +77,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         String token = null;
         try {
             //根据用户名获取用户
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UserDetails userDetails = loadUserByUsername(username);
             //输入的密码与用户的密码比对
             if (!passwordEncoder.matches(password, userDetails.getPassword())) {
                 throw new BadCredentialsException("密码不正确");
@@ -117,5 +114,29 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     @Override
     public List<UmsRole> getRoleList(Long adminId) {
         return adminRoleRelationDao.getRoleList(adminId);
+    }
+
+    @Override
+    public List<UmsResource> getResourceList(Long adminId) {
+        return adminRoleRelationDao.getResourceList(adminId);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        if (username == null || "".equals(username)) {
+            throw new UsernameNotFoundException("请输入用户名");
+        }
+        //根据用户名获取用户
+        UmsAdmin admin = getAdminByUsername(username);
+        if (admin != null) {
+            //根据用户Id获取该用户所拥有的权限
+            List<UmsPermission> permissionList = getPermissionList(admin.getId());
+            List<UmsRole> roleList = getRoleList(admin.getId());
+            List<UmsResource> resourceList = getResourceList(admin.getId());
+            //返回用户的信息及其该用户的权限列表
+            return new AdminUserDetails(admin,roleList,permissionList,resourceList);
+        }
+        //message消息
+        throw new UsernameNotFoundException("用户不存在");
     }
 }

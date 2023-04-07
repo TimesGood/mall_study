@@ -1,25 +1,25 @@
 package com.example.mall_study.config;
 
-import com.example.mall_study.component.*;
-import com.example.mall_study.service.UmsAdminService;
-import com.example.mall_study.service.impl.UserDetailsServiceImpl;
+import com.example.mall_study.component.dynamicSecurity.DynamicSecurityFilter;
+import com.example.mall_study.component.filter.JwtAuthenticationTokenFilter;
+import com.example.mall_study.component.filter.JwtUsernamePasswordAuthenticationFilter;
+import com.example.mall_study.component.handler.*;
+import com.example.mall_study.service.DynamicSecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 
 /**
  * SpringSecurity的配置
@@ -49,17 +49,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtLoginFailureHandler loginFailureHandler;
     @Autowired
-    private JwtSessionInformationExpiredStrategy sessionInformationExpiredStrategy;
-    //注入获取用户信息的操作
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new UserDetailsServiceImpl();
-    }
-    //注入PasswordEncoder加密
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    private IgnoreUrlsConfig ignoreUrlsConfig;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired(required = false)
+    private DynamicSecurityService dynamicSecurityService;
+    @Autowired(required = false)
+    private DynamicSecurityFilter dynamicSecurityFilter;
+    @Autowired
+    private UserDetailsService userDetailsService;
+
     //登录身份验证
     @Bean
     public UsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter() throws Exception {
@@ -77,21 +76,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter() throws Exception{
         return new JwtAuthenticationTokenFilter(authenticationManager());
     }
-    //验证码验证
-    @Bean
-    public CheckCodeFilter captchaFilter() {
-        return new CheckCodeFilter();
-    }
-
-    @Bean
-    public IgnoreUrlsConfig ignoreUrlsConfig(){
-        return new IgnoreUrlsConfig();
-    }
-
     //配置UserDetail和密码以及加密方式
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
 
     //用于配置需要拦截的url路径、jwt过滤器及出异常后的处理器
@@ -99,7 +87,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = httpSecurity.authorizeRequests();
         //**********************************************配置拦截规则****************************************************
-        for (String url:ignoreUrlsConfig().getUrls()){
+        for (String url:ignoreUrlsConfig.getUrls()){
+            System.out.println(url);
             registry.antMatchers(url).permitAll();
         }
         //**********************************************登录、登出****************************************************
@@ -135,6 +124,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .addFilterBefore(captchaFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(usernamePasswordAuthenticationFilter(),UsernamePasswordAuthenticationFilter.class);
-
+        //********************************************基于路径动态权限处理***********************************************
+        //基于动态权限的路径访问不能与基于注解的方式联用。
+        //要么开启资源访问，完全使用资源访问；要么就不要开启，使用注解配置
+        if(dynamicSecurityService != null) {
+            registry.and().addFilterBefore(dynamicSecurityFilter, FilterSecurityInterceptor.class);
+        }
     }
 }

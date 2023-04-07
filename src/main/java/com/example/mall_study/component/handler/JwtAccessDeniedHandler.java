@@ -1,4 +1,4 @@
-package com.example.mall_study.component;
+package com.example.mall_study.component.handler;
 
 import cn.hutool.json.JSONUtil;
 
@@ -23,6 +23,10 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler{
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException, ServletException {
         LOGGER.info("用户没有权限处理");
+        //允许跨域响应头
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Cache-Control","no-cache");
+
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=utf-8");
         response.getWriter().println(JSONUtil.parse(CommonResult.forbidden(e.getMessage())));

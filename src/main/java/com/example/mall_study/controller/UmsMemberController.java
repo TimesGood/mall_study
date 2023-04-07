@@ -6,6 +6,7 @@ import com.example.mall_study.service.UmsMemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,6 +62,7 @@ public class UmsMemberController {
         return memberService.verifyAuthCodeBack(telephone,authCode);
     }
     @ApiOperation("获取验证码图片")
+    @PreAuthorize("hasAuthority('pms:brand:read')")
     @RequestMapping(value = "/getCode", method = RequestMethod.POST)
     @ResponseBody
     public CommonResult<String> getCode(HttpServletRequest request, HttpServletResponse response){
