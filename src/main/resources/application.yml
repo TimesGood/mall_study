@@ -30,7 +30,6 @@ spring:
   elasticsearch:
     rest:
       uris: http://localhost:9200
-  security:
 
 #指定mybatis的mapper扫描路径
 mybatis:

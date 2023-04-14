@@ -1,6 +1,8 @@
 package com.example.mall_study.component.dynamicSecurity;
 
 import com.example.mall_study.config.IgnoreUrlsConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.intercept.AbstractSecurityInterceptor;
@@ -23,6 +25,7 @@ import java.io.IOException;
  * 注意：开启动态权限控制后，就不要使用注解配置权限了，否则所有某角色已经配置了该资源的访问权限，却还是没有权限访问
  */
 public class DynamicSecurityFilter extends AbstractSecurityInterceptor implements Filter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DynamicAccessDecisionManager.class);
 
     @Autowired
     private DynamicSecurityMetadataSource dynamicSecurityMetadataSource;
@@ -51,6 +54,7 @@ public class DynamicSecurityFilter extends AbstractSecurityInterceptor implement
             fi.getChain().doFilter(fi.getRequest(),fi.getResponse());
             return;
         }
+        LOGGER.info("资源校验");
         request.setAttribute(filterName,Boolean.TRUE);
         //跨域请求OPTIONS放行
         if(request.getMethod().equals(HttpMethod.OPTIONS.toString())){

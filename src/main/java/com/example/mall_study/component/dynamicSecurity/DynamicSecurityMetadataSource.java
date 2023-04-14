@@ -4,6 +4,8 @@ import cn.hutool.core.util.URLUtil;
 import com.example.mall_study.common.api.ResultCode;
 import com.example.mall_study.config.IgnoreUrlsConfig;
 import com.example.mall_study.service.DynamicSecurityService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
  * 作用获取配置该资源的所需权限
  */
 public class DynamicSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DynamicSecurityMetadataSource.class);
     private static Map<String,ConfigAttribute> configAttributeMap = null;
 
     @Autowired
@@ -43,8 +46,10 @@ public class DynamicSecurityMetadataSource implements FilterInvocationSecurityMe
     @Override
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
         if(configAttributeMap == null) loadDataSource();
+
         String requestUrl = ((FilterInvocation) object).getRequestUrl();
         String path = URLUtil.getPath(requestUrl);
+        LOGGER.info("获取访问资源"+path+"配置的动态资源路径");
         PathMatcher pathMatcher = new AntPathMatcher();
         //筛选配置有该资源的资源
         List<ConfigAttribute> collect = configAttributeMap
