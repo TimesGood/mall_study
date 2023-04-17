@@ -1,5 +1,4 @@
 package com.example.mall_study.component.dynamicSecurity;
-
 import com.example.mall_study.common.api.ResultCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +19,6 @@ public class DynamicAccessDecisionManager implements AccessDecisionManager {
 
     @Override
     public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes) throws AccessDeniedException, InsufficientAuthenticationException {
-        LOGGER.info("正在进行动态资源与用户所持资源校验");
         //该用户所拥有资源与访问该路径所配资源比对，如果有该资源的访问，通过校验
         for(ConfigAttribute configAttribute : configAttributes){
             String needAuthority = configAttribute.getAttribute();

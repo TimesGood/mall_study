@@ -1,6 +1,6 @@
 package com.example.mall_study.component.dynamicSecurity;
 
-import cn.hutool.core.util.URLUtil;
+
 import com.example.mall_study.common.api.ResultCode;
 import com.example.mall_study.config.IgnoreUrlsConfig;
 import com.example.mall_study.service.DynamicSecurityService;
@@ -15,7 +15,6 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.PathMatcher;
 
-import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,16 +23,11 @@ import java.util.stream.Collectors;
  * 作用获取配置该资源的所需权限
  */
 public class DynamicSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DynamicSecurityMetadataSource.class);
     private static Map<String,ConfigAttribute> configAttributeMap = null;
 
     @Autowired
     private DynamicSecurityService dynamicSecurityService;
 
-    @Autowired
-    private IgnoreUrlsConfig ignoreUrlsConfig;
-
-    @PostConstruct
     public void loadDataSource(){
         configAttributeMap = dynamicSecurityService.loadDataSource();
     }
@@ -46,16 +40,13 @@ public class DynamicSecurityMetadataSource implements FilterInvocationSecurityMe
     @Override
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
         if(configAttributeMap == null) loadDataSource();
-
         String requestUrl = ((FilterInvocation) object).getRequestUrl();
-        String path = URLUtil.getPath(requestUrl);
-        LOGGER.info("获取访问资源"+path+"配置的动态资源路径");
         PathMatcher pathMatcher = new AntPathMatcher();
         //筛选配置有该资源的资源
         List<ConfigAttribute> collect = configAttributeMap
                 .entrySet()
                 .stream()
-                .filter(f -> pathMatcher.match(f.getKey(), path))
+                .filter(f -> pathMatcher.match(f.getKey(), requestUrl))
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
         if(!CollectionUtils.isEmpty(collect)) return collect;

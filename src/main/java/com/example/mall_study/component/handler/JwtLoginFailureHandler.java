@@ -1,6 +1,6 @@
 package com.example.mall_study.component.handler;
 
-import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.example.mall_study.common.api.CommonResult;
 import com.example.mall_study.exception.CaptchaException;
 import org.slf4j.Logger;
@@ -20,7 +20,6 @@ import java.io.IOException;
 /**
  * 登陆失败时自定义处理逻辑
  */
-@Component
 public class JwtLoginFailureHandler implements AuthenticationFailureHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtLoginFailureHandler.class);
     @Override
@@ -39,7 +38,7 @@ public class JwtLoginFailureHandler implements AuthenticationFailureHandler {
             unauthorized = CommonResult.validateFailed("登录异常");
         }
         response.setContentType("application/json;charset=utf-8");
-        response.getWriter().print(JSONUtil.parse(unauthorized));
+        response.getWriter().print(JSONObject.toJSON(unauthorized));
         response.getWriter().flush();
     }
 }

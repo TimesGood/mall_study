@@ -1,6 +1,6 @@
 package com.example.mall_study.component.handler;
 
-import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.example.mall_study.common.api.CommonResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,14 +16,14 @@ import java.io.IOException;
 /**
  * 登出成功时的自定义处理逻辑
  */
-@Component
+
 public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtLogoutSuccessHandler.class);
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         LOGGER.info("登出成功处理");
         response.setContentType("application/json;charset=utf-8");
-        response.getWriter().print(JSONUtil.parse(CommonResult.success("登出成功")));
+        response.getWriter().print(JSONObject.toJSON(CommonResult.success("登出成功")));
         response.getWriter().flush();
     }
 }

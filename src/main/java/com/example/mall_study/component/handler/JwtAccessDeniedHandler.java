@@ -1,7 +1,6 @@
 package com.example.mall_study.component.handler;
 
-import cn.hutool.json.JSONUtil;
-
+import com.alibaba.fastjson.JSONObject;
 import com.example.mall_study.common.api.CommonResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,7 @@ import java.io.IOException;
 /**
  * 拒绝访问，权限不足处理逻辑
  */
-@Component
+
 public class JwtAccessDeniedHandler implements AccessDeniedHandler{
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAccessDeniedHandler.class);
     @Override
@@ -29,7 +28,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler{
 
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=utf-8");
-        response.getWriter().println(JSONUtil.parse(CommonResult.forbidden(e.getMessage())));
+        response.getWriter().println(JSONObject.toJSON(CommonResult.forbidden(e.getMessage())));
         response.getWriter().flush();
     }
 }

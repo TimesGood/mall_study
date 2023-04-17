@@ -1,14 +1,21 @@
 package com.example.mall_study.component.handler;
 
-import cn.hutool.json.JSONUtil;
+
+import com.alibaba.fastjson.JSONObject;
 import com.example.mall_study.common.api.CommonResult;
 import com.example.mall_study.common.util.JwtTokenUtil;
 import com.example.mall_study.config.JwtProperties;
+import com.example.mall_study.exception.CaptchaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AccountExpiredException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +29,6 @@ import java.util.Map;
 /**
  * 登录成功后处理逻辑
  */
-@Component
 public class JwtLoginSuccessHandler implements AuthenticationSuccessHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtLoginSuccessHandler.class);
     @Autowired
@@ -43,7 +49,7 @@ public class JwtLoginSuccessHandler implements AuthenticationSuccessHandler {
         //处理编码方式，防止中文乱码的情况
         response.setContentType("application/json;charset=utf-8");
         //塞到HttpServletResponse中返回给前台
-        response.getWriter().print(JSONUtil.parse(CommonResult.success(tokenMap)));
+        response.getWriter().print(JSONObject.toJSON(CommonResult.success(tokenMap)));
         response.getWriter().flush();
     }
 }

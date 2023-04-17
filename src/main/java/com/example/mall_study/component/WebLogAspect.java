@@ -1,8 +1,7 @@
 package com.example.mall_study.component;
 
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.URLUtil;
-import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.JSONObject;
+import com.example.mall_study.common.util.PatternUtils;
 import com.example.mall_study.dto.WebLog;
 import io.swagger.annotations.ApiOperation;
 import org.aspectj.lang.JoinPoint;
@@ -48,7 +47,7 @@ public class WebLogAspect {
      * 切入点
      * execution(方法修饰符 返回类型 方法所属的包.类名.方法名称(方法参数)
      */
-    @Pointcut("execution(public * com.example.mall_study.controller.*.*(..))")
+    @Pointcut("execution(public * com.example.system.*.controller.*.*(..))")
     public void webLog() {
     }
 
@@ -102,9 +101,8 @@ public class WebLogAspect {
             webLog.setDescription(apiOperation.value());
         }
         long endTime = System.currentTimeMillis();
-        String urlStr = request.getRequestURL().toString();
-        //获取请求该方法的请求地址
-        webLog.setBasePath(StrUtil.removeSuffix(urlStr, URLUtil.url(urlStr).getPath()));
+
+        webLog.setUsername(request.getRemoteUser());
         webLog.setIp(request.getRemoteUser());
         //请求方式
         webLog.setMethod(request.getMethod());
@@ -116,11 +114,16 @@ public class WebLogAspect {
         webLog.setSpendTime((int) (endTime - startTime));
         //方法请求开始时间
         webLog.setStartTime(startTime);
+        String url = request.getRequestURL().toString();
+        String uri = request.getRequestURI();
+        String basePath = PatternUtils.replace(url,uri,"");
+        //获取请求该方法的请求地址
+        webLog.setBasePath(basePath);
         //方法请求URI
-        webLog.setUri(request.getRequestURI());
+        webLog.setUri(uri);
         //方法请求URL
-        webLog.setUrl(request.getRequestURL().toString());
-        LOGGER.info("{}", JSONUtil.parse(webLog));
+        webLog.setUrl(url);
+        LOGGER.info("{}", JSONObject.toJSON(webLog));
         return result;
     }
 

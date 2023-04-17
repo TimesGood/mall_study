@@ -1,11 +1,11 @@
 package com.example.mall_study.service.impl;
 
-import cn.hutool.core.util.StrUtil;
 import com.example.mall_study.mbg.mapper.UmsResourceMapper;
 import com.example.mall_study.mbg.model.UmsResource;
 import com.example.mall_study.mbg.model.UmsResourceExample;
 import com.example.mall_study.service.UmsResourceService;
 import com.github.pagehelper.PageHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,10 +51,10 @@ public class UmsResourceServiceImpl implements UmsResourceService {
         if(categoryId!=null){
             criteria.andCategoryIdEqualTo(categoryId);
         }
-        if(StrUtil.isNotEmpty(nameKeyword)){
+        if(StringUtils.isNotEmpty(nameKeyword)){
             criteria.andNameLike('%'+nameKeyword+'%');
         }
-        if(StrUtil.isNotEmpty(urlKeyword)){
+        if(StringUtils.isNotEmpty(urlKeyword)){
             criteria.andUrlLike('%'+urlKeyword+'%');
         }
         return resourceMapper.selectByExample(example);
